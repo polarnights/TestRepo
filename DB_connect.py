@@ -98,9 +98,9 @@ insert_query = (
     f"INSERT INTO user_info (first_name, last_name, middle_name, user_id, track) VALUES {user_records_TEST}"
 )
 
-connection.autocommit = True
-cursor = connection.cursor()
-cursor.execute(insert_query, users_TEST)
+#connection.autocommit = True
+#cursor = connection.cursor()
+#cursor.execute(insert_query, users_TEST)
 
 
 select_tracks = """
