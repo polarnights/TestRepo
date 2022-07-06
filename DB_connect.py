@@ -1,4 +1,5 @@
 import psycopg2
+import time
 from sqlite3 import OperationalError
 
 def create_connection(db_name, db_user, db_password, db_host, db_port):
@@ -50,7 +51,7 @@ CREATE TABLE IF NOT EXISTS user_info
     last_name          VARCHAR,
     middle_name        VARCHAR,
     user_id            INTEGER UNIQUE,
-    phone_number       INTEGER,
+    phone_number       VARCHAR(11),
     age                INTEGER,
     citizenship        INTEGER,
     current_stage      INTEGER,
@@ -86,15 +87,15 @@ execute_query(connection, create_user_info)
 
 
 users_TEST = [
-    ("Vasily", "Petrov", "Sergeevich", 1, 1),
-    ("Anton", "Romanov", "Alexandrovich", 2, 2),
-    ("Semyon", "Skvortsov", "Nikolayevich", 3, 3)
+    ("Vasily", "Petrov", "Sergeevich", 79091234567, 1),
+    ("Anton", "Romanov", "Alexandrovich", 79993827117, 2),
+    ("Semyon", "Skvortsov", "Nikolayevich", 79631228923, 3)
 ]
 
 user_records_TEST = ", ".join(["%s"] * len(users_TEST))
 
 insert_query = (
-    f"INSERT INTO user_info (first_name, last_name, middle_name, user_id, track) VALUES {user_records_TEST}"
+    f"INSERT INTO user_info (first_name, last_name, middle_name, phone_number, track) VALUES {user_records_TEST}"
 )
 
 #connection.autocommit = True
@@ -106,7 +107,8 @@ select_tracks = """
 SELECT
   last_name,
   first_name,
-  track
+  track,
+  phone_number
 FROM
   user_info
 """
@@ -122,3 +124,14 @@ for track in tracks:
         pass
     elif track[2]==3:
         pass
+
+#---Testing section---
+TESTER_COUNT = 1
+print("Iteration #", TESTER_COUNT)
+tracks = execute_read_query(
+    connection, select_tracks
+)
+for track in tracks:
+    print(track)
+print("-----------------------------")
+#---------------------
