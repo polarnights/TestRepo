@@ -1,6 +1,6 @@
-import psycopg2
-import time
 from sqlite3 import OperationalError
+
+import psycopg2
 
 
 def create_connection(db_name, db_user, db_password, db_host, db_port):
@@ -42,6 +42,7 @@ def execute_read_query(connection, query):
     except Error as e:
         print(f"The error '{e}' occurred")
 
+
 create_user_info = """
 CREATE TABLE IF NOT EXISTS user_info
 (
@@ -80,9 +81,7 @@ COMMENT ON COLUMN user_info.current_stage IS '-  Статус прохожден
 COMMENT ON COLUMN user_info.utc_update_time IS '-  Последнее время редактирования';
 """
 
-
 execute_query(connection, create_user_info)
-
 
 users_TEST = [
     ("Vasily", "Petrov", "Sergeevich", "79091234567", 1),

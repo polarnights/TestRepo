@@ -1,10 +1,9 @@
-import telebot
-import requests
-from telebot import types
 import psycopg2
+import telebot
+from telebot import types
 
 import DB_connect
-from DB_connect import execute_query, connection
+from DB_connect import connection
 
 token = "5406309028:AAEW7yQajJqmSR7M9vA0pjEwT2AHLZRK1Dg"
 bot = telebot.TeleBot(token)
@@ -15,7 +14,8 @@ def get_text_messages(message):
     if message.text == "/start":
         bot.send_message(
             message.chat.id,
-            "Добрый день!  В компании Теремок сейчас открыта позиция Повар-кассир в г. Москва. Мы можем рассказать подробнее об условиях работы.",
+            "Добрый день!  В компании Теремок сейчас открыта позиция Повар-кассир в г. Москва. Мы можем рассказать "
+            "подробнее об условиях работы.",
         )
         keyboard = types.InlineKeyboardMarkup()
         key_yes = types.InlineKeyboardButton(text="Да", callback_data="Success1")
@@ -31,7 +31,8 @@ def get_text_messages(message):
     if message.text == "/second":
         bot.send_message(
             message.chat.id,
-            "Здравствуйте! Вы были записаны на собеседование в сеть ресторанов «Теремок». К сожалению, вы не пришли на собеседование😔. Мы можем записать Вас к нам на собеседование повторно.",
+            "Здравствуйте! Вы были записаны на собеседование в сеть ресторанов «Теремок». К сожалению, вы не пришли "
+            "на собеседование😔. Мы можем записать Вас к нам на собеседование повторно.",
         )
         keyboard = types.InlineKeyboardMarkup()
         key_yes = types.InlineKeyboardButton(text="Да", callback_data="Success3")
@@ -47,7 +48,8 @@ def get_text_messages(message):
     if message.text == "/third":
         bot.send_message(
             message.chat.id,
-            "Здравствуйте! 👋 Вас приветствует сеть ресторанов «Теремок».  Ранее мы с вами связывались и общались по вакансии Повар-кассир.",
+            "Здравствуйте! 👋 Вас приветствует сеть ресторанов «Теремок».  Ранее мы с вами связывались и общались по "
+            "вакансии Повар-кассир.",
         )
         keyboard = types.InlineKeyboardMarkup()
         key_yes = types.InlineKeyboardButton(text="Да", callback_data="Success1")
@@ -61,6 +63,7 @@ def get_text_messages(message):
 
 def reason_handler(message):
     bot.send_message(message.chat.id, text="Спасибо за ваш ответ!")
+
 
 def name_handler(message, data):
     name = message.text
@@ -86,7 +89,8 @@ def phone_handler(message, data, first, last, middle):
     cursor = connection.cursor()
     try:
         cursor.execute(
-            "UPDATE user_info SET phone_number = (%(phone)s) WHERE first_name = (%(first)s) AND last_name = (%(last)s) AND middle_name = (%(middle)s)",
+            "UPDATE user_info SET phone_number = (%(phone)s) WHERE first_name = (%(first)s) AND last_name = (%("
+            "last)s) AND middle_name = (%(middle)s)",
             {"phone": phone_number_text, "last": last, "middle": middle, "first": first},
         )
     except psycopg2.Error as e:
@@ -100,7 +104,8 @@ def phone_handler(message, data, first, last, middle):
         )
         try:
             cursor.execute(
-                "UPDATE user_info SET current_stage = 'BAD' WHERE first_name = (%(first)s) AND last_name = (%(last)s) AND middle_name = (%(middle)s)",
+                "UPDATE user_info SET current_stage = 'BAD' WHERE first_name = (%(first)s) AND last_name = (%(last)s) "
+                "AND middle_name = (%(middle)s)",
                 {"last": last, "middle": middle, "first": first},
             )
         except psycopg2.Error as e:
@@ -123,7 +128,8 @@ def phone_handler(message, data, first, last, middle):
         )
         try:
             cursor.execute(
-                "UPDATE user_info SET current_stage='GOOD' WHERE first_name = (%(first)s) AND last_name = (%(last)s) AND middle_name = (%(middle)s)",
+                "UPDATE user_info SET current_stage='GOOD' WHERE first_name = (%(first)s) AND last_name = (%(last)s) "
+                "AND middle_name = (%(middle)s)",
                 {"last": last, "middle": middle, "first": first},
             )
         except psycopg2.Error as e:
@@ -277,11 +283,11 @@ def callback_worker(call):
         )
 
     if (
-        call.data == "Decline2-1"
-        or call.data == "Decline2-2"
-        or call.data == "Decline2-3"
-        or call.data == "Decline2-4"
-        or call.data == "Decline2-5"
+            call.data == "Decline2-1"
+            or call.data == "Decline2-2"
+            or call.data == "Decline2-3"
+            or call.data == "Decline2-4"
+            or call.data == "Decline2-5"
     ):
         bot.send_message(call.message.chat.id, "Спасибо за Ваш ответ!")
 
@@ -326,10 +332,10 @@ def callback_worker(call):
         )
 
     if (
-        call.data == "Decline1"
-        or call.data == "Decline2"
-        or call.data == "Decline3"
-        or call.data == "Decline4"
+            call.data == "Decline1"
+            or call.data == "Decline2"
+            or call.data == "Decline3"
+            or call.data == "Decline4"
     ):
         bot.send_message(call.message.chat.id, "Спасибо за Ваш ответ!")
 
@@ -396,11 +402,11 @@ def callback_worker(call):
         )
 
     if (
-        call.data == "Decline3-1"
-        or call.data == "Decline3-2"
-        or call.data == "Decline3-3"
-        or call.data == "Decline3-4"
-        or call.data == "Decline3-5"
+            call.data == "Decline3-1"
+            or call.data == "Decline3-2"
+            or call.data == "Decline3-3"
+            or call.data == "Decline3-4"
+            or call.data == "Decline3-5"
     ):
         bot.send_message(call.message.chat.id, "Спасибо за Ваш ответ! ")
 
