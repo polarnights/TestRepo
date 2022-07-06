@@ -1,7 +1,6 @@
 import psycopg2
 from sqlite3 import OperationalError
 
-
 def create_connection(db_name, db_user, db_password, db_host, db_port):
     connection = None
     try:
@@ -117,4 +116,9 @@ tracks = execute_read_query(
 )
 
 for track in tracks:
-    print(track)
+    if track[2]==1:
+        pass
+    elif track[2]==2:
+        pass
+    elif track[2]==3:
+        pass
