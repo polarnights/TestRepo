@@ -1,10 +1,28 @@
 from flask import Flask, request, jsonify, make_response, abort
+from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'HIDDEN'
+#app.config['SECRET_KEY'] = 'HIDDEN'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'HIDDEN'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'HIDDEN'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+auth = HTTPBasicAuth()
+
+
+@auth.get_password
+def get_password(username):
+    if username == 'admin':
+        return '1234'
+    elif username == 'nickoliger':
+        return 'mypwd2022'
+    return None
+
+
+@auth.error_handler
+def unauthorized():
+    return make_response(jsonify({'Error': 'Unauthorized access'}), 401)
+
 
 users = [
     {
@@ -56,11 +74,13 @@ users = [
 
 
 @app.route('/teremok/get_users', methods=['GET'])
+@auth.login_required
 def get_users():
     return jsonify({'users': users})
 
 
 @app.route('/teremok/users/<string:phone_number>', methods=['GET'])
+@auth.login_required
 def get_user(phone_number):
     user = list(filter(lambda t: t['phone_number'] == phone_number, users))
     if not user:
@@ -69,6 +89,7 @@ def get_user(phone_number):
 
 
 @app.route('/teremok/create_user', methods=['POST'])
+@auth.login_required
 def create_user():
     if not request.json or not 'first_name' in request.json or not 'last_name' in request.json or not 'phone_number' in request.json:
         abort(400)
@@ -86,6 +107,7 @@ def create_user():
 
 
 @app.route('/teremok/update_info', methods=['PUT'])
+@auth.login_required
 def update_user():
     if not request.json or not 'phone_number' in request.json or not 'age' in request.json or not 'citizenship' in request.json:
         abort(400)
@@ -95,6 +117,16 @@ def update_user():
     user[0]['age'] = request.json['age']
     user[0]['citizenship'] = request.json['citizenship']
     return jsonify({'user': user[0]})
+
+
+@app.route('/teremok/delete_user/<string:phone_number>', methods=['DELETE'])
+@auth.login_required
+def delete_task(phone_number):
+    user = list(filter(lambda t: t['phone_number'] == phone_number, users))
+    if not user:
+        abort(404)
+    users.remove(user[0])
+    return jsonify({'DELETE': "Successfully deleted user!"})
 
 
 if __name__ == "__main__":
