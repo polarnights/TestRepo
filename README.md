@@ -6,9 +6,9 @@
 
 # Как устроено API? :thinking:
  - 
- - `
- - `
- - `
+ - 
+ - 
+ - 
 
 # Directory Tree :cactus:
 ```bash
