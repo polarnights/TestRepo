@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS user_info
     first_name         VARCHAR,
     last_name          VARCHAR,
     middle_name        VARCHAR,
-    user_id            INTEGER UNIQUE,
     phone_number       INTEGER,
     age                INTEGER,
     citizenship        INTEGER,
@@ -19,8 +18,6 @@ COMMENT ON COLUMN user_info.first_name IS '- Имя пользователя';
 COMMENT ON COLUMN user_info.last_name IS '- Фамилия пользователя';
 
 COMMENT ON COLUMN user_info.middle_name IS '- Отчество пользователя';
-
-COMMENT ON COLUMN user_info.user_id IS '- Уникальный id пользователя';
 
 COMMENT ON COLUMN user_info.phone_number IS '-  Номер телефона пользователя';
 

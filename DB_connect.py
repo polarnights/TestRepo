@@ -84,9 +84,41 @@ COMMENT ON COLUMN user_info.utc_update_time IS '-  Последнее время
 execute_query(connection, create_user_info)
 
 users_TEST = [
-    ("Vasily", "Petrov", "Sergeevich", "79091234567", 1),
-    ("Anton", "Romanov", "Alexandrovich", "79993827117", 2),
-    ("Semyon", "Skvortsov", "Nikolayevich", "79631228923", 3),
+    {
+        "Vasily",
+        "Petrov",
+        "Sergeevich",
+        "79091234567",
+        1
+    },
+    {
+        "Anton",
+        "Romanov",
+        "Alexandrovich",
+        "79993827117",
+        2
+    },
+    {
+        "Semyon",
+        "Skvortsov",
+        "Nikolayevich",
+        "79631228923",
+        3
+    },
+    {
+        "Nick",
+        "Oliger",
+        "Alexandrovich",
+        "79631227145",
+        4
+    },
+    {
+        "Tester",
+        "Tested",
+        "Test",
+        "42",
+        5
+    },
 ]
 
 user_records_TEST = ", ".join(["%s"] * len(users_TEST))

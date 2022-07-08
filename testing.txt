@@ -1,0 +1,10 @@
+# Как тестировать бота?
+
+# 1) Get All Users
+# curl -i http://localhost:5000/teremok/get_users
+# 2) Get User By Phone Number
+# curl -i http://localhost:5000/teremok/users/79631227145
+# 3) Add New User
+# curl -i -H "Content-Type: application/json" -X POST -d '{"phone_number":"79192281337", "first_name":"Anton", "last_name":"Dudushenko"}' http://localhost:5000/teremok/create_user
+# 4) Update User Info
+# curl -i -H "Content-Type: application/json" -X PUT -d '{"phone_number":"79091234567", "age":"GOOD", "citizenship":"BAD"}' http://localhost:5000/teremok/update_info
