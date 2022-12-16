@@ -1,5 +1,5 @@
 !
-! Last configuration change at 17:51:42 UTC Tue Dec 13 2022
+! Last configuration change at 18:38:55 UTC Fri Dec 16 2022
 !
 version 15.2
 service timestamps debug datetime msec
@@ -22,9 +22,21 @@ mmi snmp-timeout 180
 !
 !
 !
-
-
 !
+!
+!
+ip dhcp excluded-address 10.0.10.0 10.0.10.10
+ip dhcp excluded-address 10.0.20.0 10.0.20.10
+!
+ip dhcp pool netone
+ network 10.0.10.0 255.255.255.0
+ default-router 10.0.10.1
+ dns-server 10.0.10.2
+!
+ip dhcp pool nettwo
+ network 10.0.20.0 255.255.255.0
+ default-router 10.0.20.1
+ dns-server 10.0.20.2
 !
 !
 !
@@ -59,38 +71,52 @@ redundancy
 interface Ethernet0/0
  no shutdown
  no ip address
+ ip nat inside
+ ip virtual-reassembly in
 !
 interface Ethernet0/0.10
  no shutdown
  encapsulation dot1Q 10
  ip address 10.0.10.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
 !
 interface Ethernet0/0.20
  no shutdown
  encapsulation dot1Q 20
  ip address 10.0.20.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
 !
 interface Ethernet0/1
  no shutdown
- no ip address
- shutdown
+ ip address 11.0.10.1 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
 !
 interface Ethernet0/2
  no shutdown
  no ip address
  shutdown
+ duplex auto
 !
 interface Ethernet0/3
  no shutdown
  no ip address
  shutdown
+ duplex auto
 !
 ip forward-protocol nd
 !
 !
 no ip http server
 no ip http secure-server
+ip nat pool POOL 11.0.10.10 11.0.10.20 netmask 255.255.255.0
+ip nat inside source list 100 pool POOL
 !
+access-list 100 permit ip 10.0.10.0 0.0.0.255 any
+access-list 100 permit ip 10.0.20.0 0.0.0.255 any
 !
 !
 !
