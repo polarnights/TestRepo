@@ -113,7 +113,7 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 ip nat pool POOL 11.0.10.10 11.0.10.20 netmask 255.255.255.0
-ip nat inside source list 100 pool POOL
+ip nat inside source list 100 int e0/2 overload
 !
 access-list 100 permit ip 10.0.10.0 0.0.0.255 any
 access-list 100 permit ip 10.0.20.0 0.0.0.255 any
