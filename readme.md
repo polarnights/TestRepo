@@ -130,7 +130,7 @@ config terminal
 (config-subif)#exit
 (config)#exit
 
-(config)#ip nat inside source list 100 pool POOL
+(config)#ip nat inside source list 100 int e0/2 overload
 (config)#exit
 #write
 ```
