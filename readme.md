@@ -1,162 +1,164 @@
 
 Топология:
 
-![1](hw3pic.jpg)
+![1](hw4pic.jpg)
 
-Коммутаторы уровня доступа - cfg3, cfg4, cfg5
-
-[ровно так же, как в дз1]
 ----
-S3:
+Маршрутизатор
+
+R1 - cfg4:
 ```
 config terminal
-(config)#vlan 10
-(config-vlan)#exit
-(config)#vlan 20
-(config-vlan)#exit
 (config)#interface e0/0
-(config-if)#switchport mode access
-(config-if)#switchport access vlan 10
+(config-if)#no shutdown
+(config-if)#ip address 10.0.10.1 255.255.255.0
 (config-if)#exit
 (config)#interface e0/1
-(config-if)#switchport trunk encapsulation dot1q
-(config-if)#switchport trunk allowed vlan 10,20
-(config-if)#switchport mode trunk
+(config-if)#ip address 1.1.10.2 255.255.255.0
+(config-if)#no shutdown
 (config-if)#exit
-(config)#interface e0/2
-(config-if)#switchport trunk encapsulation dot1q
-(config-if)#switchport trunk allowed vlan 10,20
-(config-if)#switchport mode trunk
+(config)#interface Tunnel100
+(config-if)#ip address 172.16.10.1 255.255.255.0
+(config-if)#ip mtu 1400
+(config-if)#ip tcp adjust-mss 1360
+(config-if)# tunnel source 1.1.10.2
+(config-if)#tunnel destination 1.1.20.2
 (config-if)#exit
-(config)#vtp mode transparent
-(config)#exit
-write
+(config)#ip route 0.0.0.0 0.0.0.0 1.1.10.1
+(config)#ip route 10.0.20.2 255.255.255.255 172.16.10.2
+(config)#interface Tunnel200
+(config-if)#ip address 172.16.11.1 255.255.255.0
+(config-if)#ip mtu 1400
+(config-if)#ip tcp adjust-mss 1360
+(config-if)#tunnel source 1.1.10.2
+(config-if)#tunnel destination 1.1.30.2
+(config-if)#exit
+(config)#crypto isakmp policy 1
+(config-isakmp)#encr 3des
+(config-isakmp)#hash md5
+(config-isakmp)#authentication pre-share
+(config-isakmp)#group 2
+(config-isakmp)#lifetime 86400
+(config-isakmp)#exit
+(config)#crypto isakmp key merionet address 1.1.30.2
+(config)#crypto ipsec transform-set TS esp-3des esp-md5-hmac
+(cfg-crypto-trans)#mode transport
+(cfg-crypto-trans)#exit
+(config)#crypto ipsec profile protect-gre
+(ipsec-profile)#set security-association lifetime seconds 86400
+(ipsec-profile)#set transform-set TS
+(ipsec-profile)#exit
+(config)#interface Tunnel200
+(config-if)# tunnel protection ipsec profile protect-gre
+(config-if)#exit
 ```
 ---
-S4:
+Маршрутизатор
+
+R2 - cfg5:
 
 ```
 config terminal
-(config)#vlan 10
-(config-vlan)#exit
-(config)#vlan 20
-(config-vlan)#exit
-(config)#interface e0/1
-(config-if)#switchport mode access
-(config-if)#switchport access vlan 10
-(config-if)#exit
 (config)#interface e0/0
-(config-if)#switchport trunk encapsulation dot1q
-(config-if)#switchport trunk allowed vlan 10,20
-(config-if)#switchport mode trunk
+(config-if)#no shutdown
+(config-if)#ip address 1.1.10.1 255.255.255.0
 (config-if)#exit
-(config)#interface e0/2
-(config-if)#switchport trunk encapsulation dot1q
-(config-if)#switchport trunk allowed vlan 10,20
-(config-if)#switchport mode trunk
+(config)#interface e0/1
+(config-if)#ip address 1.1.20.1 255.255.255.0
+(config-if)#no shutdown
 (config-if)#exit
-(config)#vtp mode transparent
-(config)#exit
-write
 ```
 ----
-S5:
+Маршрутизатор
+
+R3 - cfg6:
 ```
 config terminal
-(config)#vlan 10
-(config-vlan)#exit
-(config)#vlan 20
-(config-vlan)#exit
-(config)#interface e0/1
-(config-if)#switchport trunk encapsulation dot1q
-(config-if)#switchport trunk allowed vlan 10,20
-(config-if)#switchport mode trunk
-(config-if)#exit
 (config)#interface e0/0
-(config-if)#switchport trunk encapsulation dot1q
-(config-if)#switchport trunk allowed vlan 10,20
-(config-if)#switchport mode trunk
-(config-if)#exit
-(config)#interface e0/2
-(config-if)#switchport trunk encapsulation dot1q
-(config-if)#switchport trunk allowed vlan 10,20
-(config-if)#switchport mode trunk
-(config-if)#exit
-(config)#spanning-tree vlan 1 root primary
-(config)#spanning-tree vlan 10 root primary
-(config)#spanning-tree vlan 20 root primary
-(config)#vtp mode transparent
+(config-if)#no shutdown
+(config-if)#ip address 1.1.20.2 255.255.255.0
+(config-if)#interface e0/1
+(config-if)#no shutdown
+(config-if)#ip address 10.0.20.1 255.255.255.0
 (config)#exit
-write
+(config)#interface Tunnel100
+(config-if)#ip address 172.16.10.2 255.255.255.0
+(config-if)# ip mtu 1400
+(config-if)# ip tcp adjust-mss 1360
+(config-if)# tunnel source 1.1.20.2
+(config-if)#tunnel destination 1.1.10.2
+(config-if)#exit
+(config)#ip route 0.0.0.0 0.0.0.0 1.1.20.1
+(config)#ip route 10.0.10.2 255.255.255.255 172.16.10.1
+(config)#exit
 ```
 
 -----
 
-Маршрутизатор R6 - cfg
+Маршрутизатор R4 - cfg7
 
 ---
+
 ```
 config terminal
-(config)#ip dhcp excluded-address 10.0.10.0 10.0.10.10
-(config)#ip dhcp pool netone
-(dhcp-config)#default- 10.0.10.1
-(dhcp-config)#dns-server 10.0.10.2
-(dhcp-config)#network 10.0.10.0 255.255.255.0
-(dhcp-config)#exit
-
-(config)#ip dhcp excluded-address 10.0.20.0 10.0.20.10
-(config)#ip dhcp pool nettwo
-(dhcp-config)#default- 10.0.20.1
-(dhcp-config)#dns-server 10.0.20.2
-(dhcp-config)#network 10.0.20.0 255.255.255.0
-(dhcp-config)#exit
-(config)#exit
-
-(config)#access-list 100 permit ip 10.0.10.0 0.0.0.255 any
-(config)#access-list 100 permit ip 10.0.20.0 0.0.0.255 any
-(config)#ip nat pool POOL 11.0.10.10 11.0.10.20 netmask 255.255.255.0
+(config)#interface e0/0
+(config-if)#no shutdown
+(config-if)#ip address 1.1.30.2 255.255.255.0
+(config-if)#exit
 (config)#interface e0/1
 (config-if)#no shutdown
-(config-if)#ip nat outside
+(config-if)#ip address 10.0.30.1 255.255.255.0
 (config-if)#exit
-(config)#interface e0/0
-(config-if)#ip nat inside
+(config)#interface Tunnel200
+(config-if)#ip address 172.16.11.2 255.255.255.0
+(config-if)#ip mtu 1400
+(config-if)#ip tcp adjust-mss 1360
+(config-if)#tunnel source 1.1.30.2
+(config-if)#tunnel destination 1.1.10.2
 (config-if)#exit
-(config)#interface e0/0.10
-(config-subif)#ip nat inside
-(config-subif)#exit
-(config)#interface e0/0.20
-(config-subif)#ip nat inside
-(config-subif)#exit
+(config)#ip route 0.0.0.0 0.0.0.0 1.1.30.1
 (config)#exit
-
-(config)#ip nat inside source list 100 int e0/2 overload
-(config)#exit
-#write
-```
------
-Маршрутизатор R7 -cfg7
-```
-Router>enable
-config terminal
-(config)#interface e0/0
-#no shutdown
-#ip address 11.0.10.2 255.255.255.0
+(config)#ip route 10.0.10.2 255.255.255.255 172.16.11.1
+(config)#crypto isakmp policy 1
+(config-isakmp)#encr 3des
+(config-isakmp)#hash md5
+(config-isakmp)#authentication pre-share
+(config-isakmp)#group 2
+(config-isakmp)#lifetime 86400
+(config-isakmp)#exit
+(config)#crypto isakmp key merionet address 1.1.10.2
+(config)#crypto ipsec transform-set TS esp-3des esp-md5-hmac
+(cfg-crypto-trans)#mode transport
+(cfg-crypto-trans)#exit
+(config)#crypto ipsec profile protect-gre
+(ipsec-profile)#set security-association lifetime seconds 86400
+(ipsec-profile)#set transform-set TS
+(ipsec-profile)#exit
+(config)#interface Tunnel 200
+(config-if)#tunnel protection ipsec profile protect-gre
 (config-if)#exit
-#write
+(config)#exit
 ```
 ----
 
-Клиент VPC1 - cfg1
+Клиент VPC5 - cfg1
 
 ```
-ip dhcp
+ip 10.0.10.2 255.255.255.0 10.0.10.1
 ```
 -----
 
-Клиент VPC2 - cfg2
+Клиент VPC6 - cfg2
 
 ```
-ip dhcp
+ip 10.0.20.2 255.255.255.0 10.0.20.1
 ```
 ----
+
+Клиент VPC7 - cfg3
+
+```
+ip 10.0.30.2 255.255.255.0 10.0.30.1
+```
+
+------
